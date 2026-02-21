@@ -1,6 +1,6 @@
-site_name: Fullstack AgentCore Solution Template (FAST)
-repo_url: https://code.aws.dev/proserve/genaiid/reusable-assets/fullstack-agentcore-solution-template
-repo_name: fullstack-agentcore-solution-template
+site_name: FactoryBot Core
+repo_url: https://github.com/iker592/factorybot-core
+repo_name: iker592/factorybot-core
 
 theme:
   name: material
