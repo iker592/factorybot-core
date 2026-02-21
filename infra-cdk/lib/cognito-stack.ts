@@ -36,7 +36,7 @@ export class CognitoStack extends cdk.NestedStack {
       standardAttributes: {
         email: {
           required: true,
-          mutable: false,
+          mutable: true,
         },
       },
       passwordPolicy: {
