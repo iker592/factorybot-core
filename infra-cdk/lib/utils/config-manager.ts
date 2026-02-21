@@ -9,6 +9,10 @@ export type DeploymentType = "docker" | "zip"
 export interface AppConfig {
   stack_name_base: string
   admin_user_email?: string | null
+  google_oauth?: {
+    client_id: string
+    client_secret: string
+  } | null
   backend: {
     pattern: string
     deployment_type: DeploymentType
@@ -49,9 +53,23 @@ export class ConfigManager {
         )
       }
 
+      // Load Google OAuth secret from env var
+      let googleOauth = parsedConfig.google_oauth || null
+      if (googleOauth) {
+        const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
+        if (!clientSecret) {
+          throw new Error(
+            "GOOGLE_OAUTH_CLIENT_SECRET env var is required when google_oauth is configured. " +
+            "Set it with: export GOOGLE_OAUTH_CLIENT_SECRET=your-secret"
+          )
+        }
+        googleOauth = { ...googleOauth, client_secret: clientSecret }
+      }
+
       return {
         stack_name_base: stackNameBase,
         admin_user_email: parsedConfig.admin_user_email || null,
+        google_oauth: googleOauth,
         backend: {
           pattern: parsedConfig.backend?.pattern || "strands-single-agent",
           deployment_type: deploymentType,

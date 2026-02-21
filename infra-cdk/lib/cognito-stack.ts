@@ -59,10 +59,32 @@ export class CognitoStack extends cdk.NestedStack {
       },
     })
 
+    // Add Google as a federated identity provider if configured
+    let googleProvider: cognito.UserPoolIdentityProviderGoogle | undefined
+    if (config.google_oauth) {
+      googleProvider = new cognito.UserPoolIdentityProviderGoogle(this, "GoogleProvider", {
+        userPool: userPool,
+        clientId: config.google_oauth.client_id,
+        clientSecretValue: cdk.SecretValue.unsafePlainText(config.google_oauth.client_secret),
+        scopes: ["openid", "email", "profile"],
+        attributeMapping: {
+          email: cognito.ProviderAttribute.GOOGLE_EMAIL,
+          givenName: cognito.ProviderAttribute.GOOGLE_GIVEN_NAME,
+          familyName: cognito.ProviderAttribute.GOOGLE_FAMILY_NAME,
+        },
+      })
+    }
+
+    const supportedIdentityProviders = [cognito.UserPoolClientIdentityProvider.COGNITO]
+    if (googleProvider) {
+      supportedIdentityProviders.push(cognito.UserPoolClientIdentityProvider.GOOGLE)
+    }
+
     const userPoolClient = new cognito.UserPoolClient(this, "UserPoolClient", {
       userPool: userPool,
       userPoolClientName: `${config.stack_name_base}-client`,
       generateSecret: false,
+      supportedIdentityProviders: supportedIdentityProviders,
       authFlows: {
         userPassword: true,
         userSrp: true,
@@ -78,6 +100,11 @@ export class CognitoStack extends cdk.NestedStack {
       },
       preventUserExistenceErrors: true,
     })
+
+    // Ensure client is created after Google provider
+    if (googleProvider) {
+      userPoolClient.node.addDependency(googleProvider)
+    }
 
     this.userPoolDomain = new cognito.UserPoolDomain(this, "UserPoolDomain", {
       userPool: userPool,
