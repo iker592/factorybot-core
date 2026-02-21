@@ -26,10 +26,10 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install dependencies
-        run: uv pip install --system -r .mkdocs/requirements.txt
+        run: uv venv && uv pip install -r .mkdocs/requirements.txt
 
       - name: Build docs
-        run: mkdocs build -f .mkdocs/mkdocs.yml -d ../site
+        run: .venv/bin/mkdocs build -f .mkdocs/mkdocs.yml -d ../site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
