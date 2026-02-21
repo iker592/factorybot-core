@@ -12,7 +12,7 @@ Deploys the React frontend to AWS Amplify by:
 4. Packaging and uploading to S3
 5. Triggering Amplify deployment
 
-Requires: Python 3.11+, AWS CLI, npm, Node.js
+Requires: Python 3.11+, AWS CLI, bun
 No external Python dependencies - uses standard library only.
 """
 
@@ -422,7 +422,7 @@ def main() -> int:
 
     # Validate prerequisites
     log_info("Validating prerequisites...")
-    prerequisites = ["npm", "aws", "node"]
+    prerequisites = ["bun", "aws"]
     for prereq in prerequisites:
         if not check_prerequisite(prereq):
             log_error(f"{prereq} is not installed")
@@ -509,7 +509,7 @@ def main() -> int:
     ):
         log_info("Installing dependencies...")
         try:
-            run_command(["npm", "install"], capture_output=False)
+            run_command(["bun", "install"], capture_output=False)
             log_success("Dependencies installed")
         except subprocess.CalledProcessError:
             log_error("Failed to install dependencies")
@@ -520,7 +520,7 @@ def main() -> int:
     # Build frontend
     log_info("Building React app...")
     try:
-        run_command(["npm", "run", "build"], capture_output=False)
+        run_command(["bun", "run", "build"], capture_output=False)
         log_success("Build completed")
     except subprocess.CalledProcessError:
         log_error("Build failed")
