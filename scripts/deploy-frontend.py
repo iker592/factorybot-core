@@ -141,6 +141,11 @@ def parse_config_yaml(config_path: Path) -> Dict[str, str]:
     if match:
         config["pattern"] = match.group(1).split("#")[0].strip().strip("\"'")
 
+    # Extract custom_domain
+    match = re.search(r"^custom_domain:\s*(\S+)", content, re.MULTILINE)
+    if match:
+        config["custom_domain"] = match.group(1).strip("\"'")
+
     return config
 
 
@@ -342,6 +347,7 @@ def generate_aws_exports(
     region: str,
     pattern: str,
     frontend_dir: Path,
+    custom_domain: Optional[str] = None,
 ) -> None:
     """
     Generate aws-exports.json configuration file.
@@ -352,6 +358,7 @@ def generate_aws_exports(
         region: AWS region
         pattern: Agent pattern name
         frontend_dir: Path to frontend directory
+        custom_domain: Optional custom domain to use as redirect URI
     """
     required = [
         "CognitoClientId",
@@ -365,11 +372,14 @@ def generate_aws_exports(
     if missing:
         raise ValueError(f"Missing required stack outputs: {', '.join(missing)}")
 
+    # Use custom domain if configured, otherwise fall back to Amplify URL
+    app_url = f"https://{custom_domain}" if custom_domain else outputs["AmplifyUrl"]
+
     aws_exports = {
         "authority": f"https://cognito-idp.{region}.amazonaws.com/{outputs['CognitoUserPoolId']}",
         "client_id": outputs["CognitoClientId"],
-        "redirect_uri": outputs["AmplifyUrl"],
-        "post_logout_redirect_uri": outputs["AmplifyUrl"],
+        "redirect_uri": app_url,
+        "post_logout_redirect_uri": app_url,
         "response_type": "code",
         "scope": "email openid profile",
         "automaticSilentRenew": True,
@@ -482,15 +492,18 @@ def main() -> int:
     log_success(f"Staging Bucket: {deployment_bucket}")
     log_success(f"Region: {region}")
 
-    # Get agent pattern from config
+    # Get agent pattern and custom domain from config
     config = parse_config_yaml(config_path)
     pattern = config.get("pattern", "strands-single-agent")
+    custom_domain = config.get("custom_domain")
     log_info(f"Agent pattern: {pattern}")
+    if custom_domain:
+        log_info(f"Custom domain: {custom_domain}")
 
     # Generate aws-exports.json
     log_info("Generating aws-exports.json...")
     try:
-        generate_aws_exports(stack_name, outputs, region, pattern, frontend_dir)
+        generate_aws_exports(stack_name, outputs, region, pattern, frontend_dir, custom_domain)
     except ValueError as e:
         log_error(str(e))
         return 1
