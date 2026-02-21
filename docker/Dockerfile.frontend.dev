@@ -1,15 +1,15 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:20-alpine
+FROM oven/bun:1-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files and lockfile
+COPY package.json bun.lock ./
 
 # Install dependencies
-RUN npm install
+RUN bun install --frozen-lockfile
 
 # Copy source code
 COPY . .
@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 3000
 
 # Start development server (--host exposes to Docker network)
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["bun", "run", "dev", "--", "--host"]

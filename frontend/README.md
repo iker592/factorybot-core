@@ -10,8 +10,7 @@ For full stack deployment instructions, see the [top-level README](../README.md)
 
 ### Prerequisites
 
-- Node.js (20+ recommended)
-- npm
+- [Bun](https://bun.sh/) (1.3+)
 
 ### Quick Start
 
@@ -24,13 +23,13 @@ cd frontend
 2. Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 3. Start the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
@@ -46,7 +45,7 @@ By default, the app uses Cognito authentication. To test this locally:
 
 ```bash
 export VITE_COGNITO_REDIRECT_URI=http://localhost:3000
-npm run dev
+bun run dev
 ```
 
 ### Option 2: Disable Authentication (ONLY for Local Development!!!)
@@ -92,9 +91,9 @@ This project uses [shadcn/ui](https://ui.shadcn.com/docs/components) for UI comp
 Install additional shadcn components as needed:
 
 ```bash
-npx shadcn@latest add calendar
-npx shadcn@latest add dialog
-npx shadcn@latest add form
+bunx shadcn@latest add calendar
+bunx shadcn@latest add dialog
+bunx shadcn@latest add form
 ```
 
 ### Available Components
@@ -170,12 +169,12 @@ These can be set in a `.env` file or as environment variables. The application w
 
 ## Available Scripts
 
-- `npm run dev` - Start the Vite development server
-- `npm run build` - Build for production (runs TypeScript check + Vite build)
-- `npm run preview` - Preview the production build locally
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Run ESLint with auto-fix
-- `npm run clean` - Clean build artifacts and dependencies
+- `bun run dev` - Start the Vite development server
+- `bun run build` - Build for production (runs TypeScript check + Vite build)
+- `bun run preview` - Preview the production build locally
+- `bun run lint` - Run ESLint
+- `bun run lint:fix` - Run ESLint with auto-fix
+- `bun run clean` - Clean build artifacts and dependencies
 
 ## Development Tips
 
