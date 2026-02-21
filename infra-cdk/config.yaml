@@ -4,6 +4,8 @@ stack_name_base: factorybot-core
 # If not provided, you'll need to manually create users via AWS Console
 admin_user_email: iker0592@gmail.com
 
+custom_domain: agentefactory.com
+
 google_oauth:
   client_id: "379933901191-3s18cp4c8kst2fu1t3ijp9l5scpa13sr.apps.googleusercontent.com"
   # client_secret loaded from GOOGLE_OAUTH_CLIENT_SECRET env var

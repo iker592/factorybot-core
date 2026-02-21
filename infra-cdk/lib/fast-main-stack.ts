@@ -26,9 +26,14 @@ export class FastMainStack extends cdk.Stack {
       config: props.config,
     })
 
+    const callbackUrls = ["http://localhost:3000", this.amplifyHostingStack.amplifyUrl]
+    if (props.config.custom_domain) {
+      callbackUrls.push(`https://${props.config.custom_domain}`)
+    }
+
     this.cognitoStack = new CognitoStack(this, `${id}-cognito`, {
       config: props.config,
-      callbackUrls: ["http://localhost:3000", this.amplifyHostingStack.amplifyUrl],
+      callbackUrls,
     })
 
     // Step 2: Create backend stack with the predictable Amplify URL and Cognito details

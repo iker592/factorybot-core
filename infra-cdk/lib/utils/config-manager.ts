@@ -9,6 +9,7 @@ export type DeploymentType = "docker" | "zip"
 export interface AppConfig {
   stack_name_base: string
   admin_user_email?: string | null
+  custom_domain?: string | null
   google_oauth?: {
     client_id: string
     client_secret: string
@@ -69,6 +70,7 @@ export class ConfigManager {
       return {
         stack_name_base: stackNameBase,
         admin_user_email: parsedConfig.admin_user_email || null,
+        custom_domain: parsedConfig.custom_domain || null,
         google_oauth: googleOauth,
         backend: {
           pattern: parsedConfig.backend?.pattern || "strands-single-agent",
